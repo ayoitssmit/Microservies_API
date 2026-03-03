@@ -6,6 +6,8 @@ This repository contains a RESTful API backend built with Express.js for an e-co
 
 - **Node.js**: JavaScript runtime environment.
 - **Express.js**: Web framework for building the API.
+- **MongoDB**: NoSQL database for flexible data storage.
+- **Mongoose**: Elegant MongoDB object modeling for Node.js.
 - **Joi**: Object schema description language and validator for data validation.
 - **Cors**: Middleware to enable Cross-Origin Resource Sharing.
 
@@ -15,7 +17,7 @@ This repository contains a RESTful API backend built with Express.js for an e-co
 - **Product Management**: Create new products and retrieve product lists.
 - **Cart Operations**: Add items to cart, remove items, and view cart contents.
 - **Order Processing**: Create orders with stock validation and calculate totals.
-- **In-Memory Storage**: Uses in-memory data structures for fast prototyping and testing without a persistent database dependency.
+- **MongoDB Integration**: Persists data efficiently using a real MongoDB database and Mongoose schemas.
 - **Data Validation**: Robust request validation using Joi schemas.
 - **Error Handling**: Centralized error handling middleware.
 
@@ -32,7 +34,14 @@ This repository contains a RESTful API backend built with Express.js for an e-co
     npm install
     ```
 
-3.  **Start the server**
+3.  **Environment Variables**
+    Create a `.env` file in the root directory and add your MongoDB connection string:
+    ```env
+    MONGO_URI=mongodb://localhost:27017/ecommerce
+    PORT=5000
+    ```
+
+4.  **Start the server**
     ```bash
     npm start
     ```
@@ -62,9 +71,10 @@ This repository contains a RESTful API backend built with Express.js for an e-co
 
 ## Project Structure
 
+- `config/`: Database connection configuration.
 - `controllers/`: Logic for handling API requests.
 - `middleware/`: Custom middleware for validation and error handling.
-- `models/`: In-memory data configurations.
+- `models/`: Mongoose schemas (Product, User, Cart, Order) and database configurations.
 - `routes/`: Route definitions for API endpoints.
 - `server.js`: Entry point of the application.
 
