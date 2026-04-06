@@ -54,9 +54,17 @@ export default function ProductDetail() {
 
       <div className="product-detail-card">
         <div className="product-detail-image">
-          <div className="product-placeholder-img large">
-            {product.name.charAt(0).toUpperCase()}
-          </div>
+          <img 
+            src={product.image} 
+            alt={product.name} 
+            className="product-img-large"
+            onLoad={(e) => e.target.classList.add('loaded')}
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src = 'https://via.placeholder.com/600x400?text=Product';
+              e.target.classList.add('loaded'); // Ensure it shows the placeholder
+            }}
+          />
         </div>
 
         <div className="product-detail-info">

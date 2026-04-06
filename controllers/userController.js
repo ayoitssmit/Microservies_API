@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const generateToken = require('../utils/generateToken');
 
 // @desc    Get all users
 // @route   GET /users
@@ -37,7 +38,8 @@ const registerUser = async (req, res) => {
             res.status(201).json({
                 _id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                token: generateToken(user._id)
             });
         } else {
             res.status(400);
@@ -68,8 +70,35 @@ const getUserById = async (req, res) => {
     }
 };
 
+// @desc    Auth user & get token
+// @route   POST /users/login
+// @access  Public
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (user && (await user.matchPassword(password))) {
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                token: generateToken(user._id)
+            });
+        } else {
+            res.status(401);
+            throw new Error('Invalid email or password');
+        }
+    } catch (error) {
+        res.status(400);
+        throw new Error(error.message || 'Invalid login data');
+    }
+};
+
 module.exports = {
     getUsers,
     registerUser,
+    loginUser,
     getUserById,
 };

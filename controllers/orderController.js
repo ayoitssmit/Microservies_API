@@ -1,20 +1,15 @@
 const Order = require('../models/Order');
 const User = require('../models/User');
 const Product = require('../models/Product');
+const Cart = require('../models/Cart');
 
 // @desc    Create new order
 // @route   POST /orders
-// @access  Public
+// @access  Private
 const createOrder = async (req, res) => {
     try {
-        const { userId, items } = req.body;
-
-        // Validate user
-        const user = await User.findById(userId);
-        if (!user) {
-            res.status(404);
-            throw new Error('User not found');
-        }
+        const { items } = req.body;
+        const userId = req.user._id;
 
         // Calculate total and validate products
         let total = 0;
@@ -44,16 +39,20 @@ const createOrder = async (req, res) => {
         }
 
         const order = new Order({
-            user: user._id,
+            user: userId,
             orderItems,
             totalPrice: total
         });
 
         const createdOrder = await order.save();
+
+        // Clear the user's cart after successful order
+        await Cart.findOneAndUpdate({ user: userId }, { items: [] });
+
         res.status(201).json(createdOrder);
 
     } catch (error) {
-        res.status(error.statusCode || 500);
+        res.status(res.statusCode === 200 ? 500 : res.statusCode);
         throw new Error(error.message || 'Server Error');
     }
 };

@@ -59,9 +59,18 @@ export default function ProductList() {
         {products.map((product) => (
           <Link to={`/products/${product._id}`} key={product._id} className="product-card">
             <div className="product-card-image">
-              <div className="product-placeholder-img">
-                {product.name.charAt(0).toUpperCase()}
-              </div>
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                className="product-img"
+                loading="lazy"
+                onLoad={(e) => e.target.classList.add('loaded')}
+                onError={(e) => {
+                  e.target.onerror = null; 
+                  e.target.src = 'https://via.placeholder.com/300x200?text=Product';
+                  e.target.classList.add('loaded'); // Ensure it shows the placeholder
+                }}
+              />
             </div>
             <div className="product-card-body">
               <h3 className="product-card-title">{product.name}</h3>

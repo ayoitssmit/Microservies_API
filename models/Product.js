@@ -18,6 +18,10 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 0
+    },
+    image: {
+        type: String,
+        default: 'https://via.placeholder.com/300x200?text=Product+Image'
     }
 }, {
     timestamps: true

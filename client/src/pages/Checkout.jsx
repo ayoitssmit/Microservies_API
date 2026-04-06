@@ -19,11 +19,16 @@ export default function Checkout() {
   if (orderPlaced) {
     return (
       <div className="order-success">
-        <div className="success-icon">✓</div>
+        <div className="success-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
         <h1>Order Placed Successfully!</h1>
         <p className="order-id">Order ID: <code>{orderId}</code></p>
         <p>Thank you for your purchase. Your order is being processed.</p>
-        <Link to="/" className="btn btn-primary">Continue Shopping</Link>
+        <Link to="/shop" className="btn btn-primary">Continue Shopping</Link>
       </div>
     );
   }
@@ -33,7 +38,7 @@ export default function Checkout() {
       <div className="empty-state">
         <h2>Nothing to Checkout</h2>
         <p>Your cart is empty.</p>
-        <Link to="/" className="btn btn-primary">Browse Products</Link>
+        <Link to="/shop" className="btn btn-primary">Browse Collection</Link>
       </div>
     );
   }
@@ -84,7 +89,7 @@ export default function Checkout() {
             {loading ? 'Placing Order…' : 'Place Order'}
           </button>
           <Link to="/cart" className="btn btn-secondary btn-block">
-            ← Back to Cart
+            Back to Cart
           </Link>
         </div>
       </div>

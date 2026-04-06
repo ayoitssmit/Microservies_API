@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
@@ -21,6 +22,11 @@ app.use('/users', require('./routes/userRoutes'));
 app.use('/products', require('./routes/productRoutes'));
 app.use('/cart', require('./routes/cartRoutes'));
 app.use('/orders', require('./routes/orderRoutes'));
+app.use('/payment', require('./routes/paymentRoutes'));
+app.use('/upload', require('./routes/uploadRoutes'));
+
+// Expose static folder for uploads
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Error Handler
 app.use(errorHandler);

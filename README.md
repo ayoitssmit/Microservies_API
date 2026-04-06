@@ -10,6 +10,9 @@ This repository contains a full-stack e-commerce application with an Express.js 
 - **MongoDB**: NoSQL database for flexible data storage.
 - **Mongoose**: Elegant MongoDB object modeling for Node.js.
 - **Cors**: Middleware to enable Cross-Origin Resource Sharing.
+- **JWT & Bcrypt**: For secure user authentication and authorization.
+- **Joi**: Data validation.
+- **Multer**: For handling multipart/form-data (image uploads).
 
 ### Frontend
 - **React**: Component-based UI library.
@@ -20,12 +23,16 @@ This repository contains a full-stack e-commerce application with an Express.js 
 
 ## Features
 
-- **User Management**: Register and retrieve user details.
+- **User Management & Auth**: User registration, login, JWT issuance, and password hashing.
+- **Protected Routes**: Middleware to secure sensitive endpoints.
 - **Product Management**: Create new products and retrieve product lists.
 - **Cart Operations**: Add items to cart, remove items, and view cart contents with global state management.
 - **Order Processing**: Create orders with stock validation and calculate totals.
 - **React Front-end**: ProductList, ProductDetail, Cart, and Checkout pages with a premium dark-themed UI.
 - **MongoDB Integration**: Persists data efficiently using a real MongoDB database and Mongoose schemas.
+- **Image Uploads**: Local image upload handler using Multer.
+- **Payment Mockup**: Dummy API endpoints for initiating and verifying payments.
+- **Data Validation**: Inputs are validated using Joi.
 - **Error Handling**: Centralized error handling middleware.
 
 ## Installation and Setup
@@ -43,11 +50,12 @@ This repository contains a full-stack e-commerce application with an Express.js 
     npm install
     ```
 
-3.  **Environment Variables**
-    Create a `.env` file in the root directory and add your MongoDB connection string:
+4.  **Environment Variables**
+    Create a `.env` file in the root directory:
     ```env
     MONGO_URI=mongodb://localhost:27017/ecommerce
     PORT=5000
+    JWT_SECRET=your_jwt_secret_here
     ```
 
 4.  **Start the server**
@@ -76,9 +84,10 @@ This repository contains a full-stack e-commerce application with an Express.js 
 
 ## API Endpoints
 
-### Users
-- `GET /users`: Retrieve all users.
+### Users (Auth)
+- `GET /users`: Retrieve all users (Protected).
 - `POST /users`: Register a new user.
+- `POST /users/login`: Authenticate a user and get JWT token.
 - `GET /users/:id`: Retrieve a specific user by ID.
 
 ### Products
@@ -92,9 +101,31 @@ This repository contains a full-stack e-commerce application with an Express.js 
 - `DELETE /cart/:userId/item/:productId`: Remove an item from the cart.
 
 ### Orders
-- `GET /orders`: Retrieve all orders.
-- `POST /orders`: Create a new order.
-- `GET /orders/user/:userId`: Retrieve orders for a specific user.
+- `GET /orders`: Retrieve all orders (Protected).
+- `POST /orders`: Create a new order (Protected).
+- `GET /orders/user/:userId`: Retrieve orders for a specific user (Protected).
+
+### Upload
+- `POST /upload`: Upload an image using multipart/form-data (Protected). Local storage.
+
+### Payments
+- `POST /payment/process`: Initiate a dummy payment (Protected).
+- `POST /payment/verify`: Verify a dummy payment (Protected).
+
+## Deployment Instructions
+
+### Render / Railway / Heroku
+
+1. Create a clear account on Render or Railway.
+2. Initialize a new Web Service and connect it to your GitHub Repository.
+3. Configure the **Build Command** and **Start Command**:
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+4. **Environment Variables**: Add exactly the same variables used in your `.env` (like `MONGO_URI`, `JWT_SECRET`).
+    - *Note for MongoDB*: You must use a cloud MongoDB cluster like [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for production.
+5. Deploy!
+
+*Caveat with Uploads:* Render/Railway web instances often have ephemeral file systems. If an app restarts, locally stored uploads disappear. For a production-ready application, swap `multer` disk storage with `Cloudinary` or AWS S3.
 
 ## Project Structure
 

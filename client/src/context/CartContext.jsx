@@ -1,41 +1,27 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import * as api from '../api';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
-// We use a demo userId. On first load we try to fetch/create one.
-const DEMO_USER_KEY = 'ecommerce_demo_userId';
-
 export function CartProvider({ children }) {
-  const [userId, setUserId] = useState(() => localStorage.getItem(DEMO_USER_KEY) || '');
+  const { user } = useAuth();
+  const userId = user ? user._id : null;
+  
   const [cartItems, setCartItems] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [cartCount, setCartCount] = useState(0);
 
-  // Bootstrap: ensure we have a userId
+  // Clear cart when user logs out
   useEffect(() => {
-    async function ensureUser() {
-      if (userId) return;
-      try {
-        const { data: users } = await api.fetchUsers();
-        if (users.length > 0) {
-          const id = users[0]._id;
-          localStorage.setItem(DEMO_USER_KEY, id);
-          setUserId(id);
-        } else {
-          // Create a demo user
-          const { data: newUser } = await api.registerUser('Demo User', 'demo@shop.com', 'password123');
-          localStorage.setItem(DEMO_USER_KEY, newUser._id);
-          setUserId(newUser._id);
-        }
-      } catch (err) {
-        console.error('Failed to bootstrap user', err);
-      }
+    if (!userId) {
+      setCartItems([]);
+      setCartTotal(0);
+      setCartCount(0);
     }
-    ensureUser();
   }, [userId]);
 
   // Fetch cart whenever userId is set
@@ -63,13 +49,19 @@ export function CartProvider({ children }) {
   }, [refreshCart]);
 
   const addItem = async (productId, quantity = 1) => {
-    if (!userId) return;
+    if (!userId) {
+       // Ideally we'd alert the user to login here
+       console.warn('User must be logged in to add items to cart.');
+       return false;
+    }
     setLoading(true);
     try {
       await api.addToCart(userId, productId, quantity);
       await refreshCart();
+      return true;
     } catch (err) {
       console.error('Failed to add to cart', err);
+      return false;
     } finally {
       setLoading(false);
     }

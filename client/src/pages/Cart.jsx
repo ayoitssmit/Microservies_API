@@ -16,10 +16,16 @@ export default function Cart() {
   if (cartItems.length === 0) {
     return (
       <div className="empty-state">
-        <div className="empty-cart-icon">🛒</div>
+        <div className="empty-cart-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </div>
         <h2>Your Cart is Empty</h2>
-        <p>Looks like you haven't added anything yet.</p>
-        <Link to="/" className="btn btn-primary">Browse Products</Link>
+        <p>Explore our curated collection and add items to your cart.</p>
+        <Link to="/shop" className="btn btn-primary">Browse Collection</Link>
       </div>
     );
   }

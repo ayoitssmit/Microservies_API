@@ -4,6 +4,15 @@ const API = axios.create({
   baseURL: 'http://localhost:5000',
 });
 
+// Add Interceptor for JWT tokens
+API.interceptors.request.use((config) => {
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  if (userInfo && userInfo.token) {
+    config.headers.Authorization = `Bearer ${userInfo.token}`;
+  }
+  return config;
+});
+
 // ─── Products ───────────────────────────────────────
 export const fetchProducts = () => API.get('/products');
 export const fetchProductById = (id) => API.get(`/products/${id}`);
@@ -18,10 +27,13 @@ export const removeFromCart = (userId, productId) =>
 // ─── Orders ─────────────────────────────────────────
 export const createOrder = (userId, items) =>
   API.post('/orders', { userId, items });
+export const fetchUserOrders = (userId) => API.get(`/orders/user/${userId}`);
 
-// ─── Users ──────────────────────────────────────────
+// ─── Users & Auth ───────────────────────────────────
 export const fetchUsers = () => API.get('/users');
 export const registerUser = (name, email, password) =>
   API.post('/users', { name, email, password });
+export const loginUser = (email, password) => 
+  API.post('/users/login', { email, password });
 
 export default API;

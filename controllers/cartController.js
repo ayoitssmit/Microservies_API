@@ -8,14 +8,18 @@ const User = require('../models/User');
 const getCart = async (req, res) => {
     try {
         const userId = req.params.userId;
+        console.log(`Getting cart for user: ${userId}`);
         let cart = await Cart.findOne({ user: userId }).populate('items.product', 'name price');
 
         if (!cart) {
+            console.log(`Cart not found for user ${userId}, creating new one.`);
             cart = await Cart.create({ user: userId, items: [] });
         }
 
+        console.log(`Returning cart with ${cart.items.length} items`);
         res.json(cart);
     } catch (error) {
+        console.error(`Error in getCart: ${error.message}`);
         res.status(500);
         throw new Error('Server Error');
     }
@@ -27,16 +31,19 @@ const getCart = async (req, res) => {
 const addToCart = async (req, res) => {
     try {
         const { userId, productId, quantity } = req.body;
+        console.log(`Adding to cart: User ${userId}, Product ${productId}, Qty ${quantity}`);
 
         // Check product existence
         const product = await Product.findById(productId);
         if (!product) {
+            console.log(`Product ${productId} not found`);
             res.status(404);
             throw new Error('Product not found');
         }
 
         let cart = await Cart.findOne({ user: userId });
         if (!cart) {
+            console.log(`Cart not found for user ${userId}, creating new one.`);
             cart = new Cart({ user: userId, items: [] });
         }
 
@@ -49,12 +56,14 @@ const addToCart = async (req, res) => {
         }
 
         await cart.save();
+        console.log('Cart saved successfully');
         
         // Populate before returning
         const updatedCart = await Cart.findById(cart._id).populate('items.product', 'name price');
         res.json(updatedCart);
 
     } catch (error) {
+        console.error(`Error in addToCart: ${error.message}`);
         res.status(500);
         throw new Error('Server Error');
     }
