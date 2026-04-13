@@ -24,8 +24,7 @@ const registerUser = async (req, res) => {
         const userExists = await User.findOne({ email });
 
         if (userExists) {
-            res.status(400);
-            throw new Error('User already exists');
+            return res.status(400).json({ message: 'User already exists' });
         }
 
         const user = await User.create({
@@ -42,12 +41,11 @@ const registerUser = async (req, res) => {
                 token: generateToken(user._id)
             });
         } else {
-            res.status(400);
-            throw new Error('Invalid user data');
+            return res.status(400).json({ message: 'Invalid user data' });
         }
     } catch (error) {
-        res.status(400);
-        throw new Error(error.message || 'Invalid user data');
+        console.error('Registration error:', error.message);
+        return res.status(500).json({ message: error.message || 'Server error during registration' });
     }
 };
 
@@ -87,12 +85,11 @@ const loginUser = async (req, res) => {
                 token: generateToken(user._id)
             });
         } else {
-            res.status(401);
-            throw new Error('Invalid email or password');
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {
-        res.status(400);
-        throw new Error(error.message || 'Invalid login data');
+        console.error('Login error:', error.message);
+        return res.status(500).json({ message: error.message || 'Server error during login' });
     }
 };
 
